@@ -1,6 +1,8 @@
 const express = require('express')
 const app = express()
 
+app.use(express.json())
+
 let persons = [
     { 
       "id": 1,
@@ -48,6 +50,14 @@ app.get('/api/persons/:id', (request, response) => {
     } else {
         response.status(404)
     }
+    response.json(person)
+})
+
+app.post('/api/persons', (request, response) => {
+    const person = request.body
+    console.log(person)
+
+    persons = persons.concat(person)
     response.json(person)
 })
 
