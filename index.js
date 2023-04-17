@@ -54,12 +54,26 @@ app.get('/api/persons/:id', (request, response) => {
 })
 
 app.post('/api/persons', (request, response) => {
-    const person = request.body
-    person.id = Math.floor(Math.random() * 100)
-    console.log(person)
+    const newPerson = request.body
+    newPerson.id = Math.floor(Math.random() * 100)
+    console.log(newPerson)
 
-    persons = persons.concat(person)
-    response.json(person)
+    const nameExists = persons.some(person => person.name.toLowerCase() === newPerson.name.toLowerCase())
+
+    if (!newPerson.name || !newPerson.number) {
+        response.status(503)
+        response.json(
+            {error: 'name and number must exist'}
+        )
+    } else if (nameExists) {
+        response.status(503)
+        response.json(
+            {error: 'name already exists in phonebook'}
+        )
+    } else {
+        persons = persons.concat(newPerson)
+        response.json(newPerson)
+    }
 })
 
 app.delete('/api/persons/:id', (request, response) => {
