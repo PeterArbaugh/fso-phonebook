@@ -55,6 +55,7 @@ app.get('/api/persons/:id', (request, response) => {
 
 app.post('/api/persons', (request, response) => {
     const person = request.body
+    person.id = Math.floor(Math.random() * 100)
     console.log(person)
 
     persons = persons.concat(person)
