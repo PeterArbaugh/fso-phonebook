@@ -11,3 +11,15 @@ content-type: application/json
     "name": "Moran Moran",
     "number": "124-5567-123"
 }
+
+### Cloud deploy
+GET https://fso-phonebook-957g.onrender.com/api/persons
+
+###
+POST https://fso-phonebook-957g.onrender.com/api/persons HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Prod User",
+    "number": "124-5567-123"
+}
