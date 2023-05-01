@@ -28,12 +28,14 @@ app.get('/', (request, response) => {
     response.send('<h1>hello world</h1>')
 })
 
-/* app.get('/info', (request, response) => {
-    const personsCount = persons.length
-    const date = new Date()
-    response.send(`Phonebook has info for ${personsCount} people. <br/><br/> ${date.toString()}`)
-    
-}) */
+app.get('/info', (request, response) => {
+    Person.find({})
+        .then(persons => {
+            const personsCount = persons.length
+            const date = new Date()
+            response.send(`Phonebook has info for ${personsCount} people. <br/><br/> ${date.toString()}`)
+        })
+})
 
 app.get('/api/persons', (request, response, next) => {
     Person.find({}).then(persons => {
