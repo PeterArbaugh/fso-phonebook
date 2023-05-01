@@ -17,24 +17,32 @@ morgan.token('json-content', (request) => {
 
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :json-content'))
 
+const errorHandler = (error, request, response, next) => {
+    console.error(error.message)
+    next(error)
+}
+
+app.use(errorHandler)
+
 app.get('/', (request, response) => {
     response.send('<h1>hello world</h1>')
 })
 
-app.get('/info', (request, response) => {
+/* app.get('/info', (request, response) => {
     const personsCount = persons.length
     const date = new Date()
     response.send(`Phonebook has info for ${personsCount} people. <br/><br/> ${date.toString()}`)
     
-})
+}) */
 
-app.get('/api/persons', (request, response) => {
+app.get('/api/persons', (request, response, next) => {
     Person.find({}).then(persons => {
         response.json(persons)
     })
+    .catch(error => next(error))
 })
 
-app.get('/api/persons/:id', (request, response) => {
+app.get('/api/persons/:id', (request, response, next) => {
     const uid = request.params.id
     console.log(uid)
     const person = Person.find({ _id: uid }).then(person => {
@@ -46,9 +54,10 @@ app.get('/api/persons/:id', (request, response) => {
             response.json({ error: 'Person not found'})
         }
     })
+    .catch(error => next(error))
 })
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
     const newPerson = request.body
     console.log(newPerson)
 
@@ -76,17 +85,19 @@ app.post('/api/persons', (request, response) => {
                 response.json(savedPerson)
             })
             .catch(error => {
-                console.log(error)
+                next(error)
                 response.status(500).end()
             })
     }
+    
 })
 
-app.delete('/api/persons/:id', (request, response) => {
+app.delete('/api/persons/:id', (request, response, next) => {
     Person.findByIdAndRemove(request.params.id)
         .then(result => {
             response.status(204).end()
         })
+        .catch(error => next(error))
 })
 
 const PORT = process.env.PORT
