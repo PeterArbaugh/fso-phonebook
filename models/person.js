@@ -15,7 +15,10 @@ mongoose.connect(url)
     })
 
 const personSchema = new mongoose.Schema({
-    name: String,
+    name: {
+        type: String,
+        minLength: 3
+    },
     number: String,
 })
 
@@ -26,7 +29,5 @@ personSchema.set('toJSON', {
         delete returnedObject.__v
     }
 })
-
-// const Person = mongoose.model('Person', personSchema)
 
 module.exports = mongoose.model('Person', personSchema)

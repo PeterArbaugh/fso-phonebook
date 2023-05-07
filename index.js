@@ -19,10 +19,16 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :j
 
 const errorHandler = (error, request, response, next) => {
     console.error(error.message)
-    next(error)
+    console.log('error handler')
+    if (error.name === 'ValidationError') {
+        console.log(`validation error`)
+        // return response.status(400).json({ error: error.message })
+        response.status(400)
+        response.send('Validation error')
+    } else {
+        response.status(error.status || 500).json({error: "Internal server error"})
+    }
 }
-
-app.use(errorHandler)
 
 app.get('/', (request, response) => {
     response.send('<h1>hello world</h1>')
@@ -86,11 +92,11 @@ app.post('/api/persons', (request, response, next) => {
                 response.json(savedPerson)
             })
             .catch(error => {
+                console.log(`error caught in put`, error);
                 next(error)
-                response.status(500).end()
+                //response.status(500).end()
             })
     }
-    
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
@@ -125,3 +131,5 @@ const PORT = process.env.PORT
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
+
+app.use(errorHandler) 
