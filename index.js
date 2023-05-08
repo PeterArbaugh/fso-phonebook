@@ -24,7 +24,7 @@ const errorHandler = (error, request, response, next) => {
         console.log(`validation error`)
         // return response.status(400).json({ error: error.message })
         response.status(400)
-        response.send('Validation error')
+        response.send(error.message)
     } else {
         response.status(error.status || 500).json({error: "Internal server error"})
     }
